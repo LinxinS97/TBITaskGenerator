@@ -78,8 +78,3 @@ Your answer should be only operations without specific commands.
             }])[1]))
         
         return res
-
-if __name__ == "__main__":
-    generator = Generator()
-    res = generator.generate("Appointment & Reminders", n_reply=3)
-    a = 1
