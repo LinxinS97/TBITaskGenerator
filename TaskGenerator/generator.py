@@ -23,6 +23,7 @@ Your answer should be in JSON format. For example:
 
     OPERATION_GENERATOR = """# Your task
 Given a scenario, reply with {n} diverse, distinguishable operations to the AI assistant ({assistant_name}). The operations should related to people's daily life.
+The operation should include not only addition, but also deletion, modification, and query.
 
 # Scenario
 {scenario}
@@ -33,6 +34,7 @@ Your answer should be only operations without specific commands.
 ## Answer format
 ["operation_1", "operation_2", ...]
 """
+    
     
     def __init__(
             self,
@@ -71,10 +73,14 @@ Your answer should be only operations without specific commands.
                 system_message=self.TRANSLATOR_SYS_MSG.format(assistant_name=assistant_name),
                 llm_config=self.llm_config
             )
-            
-            res.append(json.loads(translator.generate_oai_reply([{
-                "content": f"I want to {ope.lower()}",
-                "role": "user"
-            }])[1]))
+            tmp_res = json.loads(translator.generate_oai_reply([{
+                          "content": f"I want to {ope.lower()}",
+                          "role": "user"
+                      }])[1])
+            tmp_res.update({
+                "task_completion": scenario,
+                "invocation": assistant_name,
+            })
+            res.append(tmp_res)
         
         return res
